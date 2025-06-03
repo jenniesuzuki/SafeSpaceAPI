@@ -90,9 +90,8 @@ namespace SafeSpaceAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSolicitacaoAjuda(Guid id)
         {
-            var solicitacaoAjuda = await _context.SolicitacaoAjuda.Where(s => s.Id == id)
+            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FromSqlRaw("SELECT * FROM (SELECT * FROM SolicitacoesAjuda WHERE Id = :p0 ORDER BY 1) WHERE ROWNUM <= 1", id)
             .AsNoTracking()
-            .Take(1)
             .FirstOrDefaultAsync();
             if (solicitacaoAjuda == null)
             {
