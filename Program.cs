@@ -10,6 +10,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Configurar logging detalhado para EF Core
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+
+        // Filtro de logging para EF Core (Database.Command exibe SQL gerado)
+        builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information);
+
         // Add services to the container.
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
@@ -40,8 +47,8 @@ public class Program
         builder.Services.AddDbContext<SafeSpaceContext>(options => {
             options
                 .UseOracle(builder.Configuration.GetConnectionString("DefaultConnection"))
-                .UseLoggerFactory(loggerFactory) // Adiciona logger
-                .EnableSensitiveDataLogging();   // Exibe valores dos parâmetros
+                .EnableSensitiveDataLogging()   // Mostra valores dos parâmetros SQL no log
+                .LogTo(Console.WriteLine, LogLevel.Information);  // Loga as mensagens no console
         });
 
         // Registro do repositório genérico
