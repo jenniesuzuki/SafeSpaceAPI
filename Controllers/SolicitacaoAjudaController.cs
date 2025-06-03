@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SafeSpaceAPI.Domain.Entities;
 using SafeSpaceAPI.Infrastructure.Context;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SafeSpaceAPI.Controllers
 {
@@ -90,7 +91,8 @@ namespace SafeSpaceAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSolicitacaoAjuda(Guid id)
         {
-            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FromSqlRaw("SELECT * FROM (SELECT * FROM SolicitacoesAjuda WHERE Id = :p0 ORDER BY 1) WHERE ROWNUM <= 1", id)
+            var idString = id.ToString();
+            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FromSqlInterpolated($"SELECT * FROM SolicitacoesAjuda WHERE Id = {idString} AND ROWNUM = 1")
             .AsNoTracking()
             .FirstOrDefaultAsync();
             if (solicitacaoAjuda == null)
