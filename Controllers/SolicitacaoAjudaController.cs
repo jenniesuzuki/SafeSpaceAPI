@@ -92,6 +92,7 @@ namespace SafeSpaceAPI.Controllers
         {
             var solicitacaoAjuda = await _context.SolicitacaoAjuda.Where(s => s.Id == id)
             .AsNoTracking()
+            .Take(1)
             .FirstOrDefaultAsync();
             if (solicitacaoAjuda == null)
             {
