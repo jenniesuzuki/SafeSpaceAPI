@@ -29,9 +29,20 @@ public class Program
             });
         });
 
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Information)
+                .AddConsole();
+        });
+
         // Configuração do DbContext com Oracle
-        builder.Services.AddDbContext<SafeSpaceContext>(options =>
-            options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<SafeSpaceContext>(options => {
+            options
+                .UseOracle(builder.Configuration.GetConnectionString("DefaultConnection"))
+                .UseLoggerFactory(loggerFactory) // Adiciona logger
+                .EnableSensitiveDataLogging();   // Exibe valores dos parâmetros
+        });
 
         // Registro do repositório genérico
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
