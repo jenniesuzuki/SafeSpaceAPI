@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Oracle.ManagedDataAccess.Client;
 using SafeSpaceAPI.Domain.Entities;
 using SafeSpaceAPI.Infrastructure.Context;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -91,15 +93,21 @@ namespace SafeSpaceAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSolicitacaoAjuda(Guid id)
         {
-            var idString = id.ToString();
-            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FromSqlInterpolated($"SELECT * FROM SolicitacoesAjuda WHERE Id = {idString} AND ROWNUM = 1")
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
+            // 1. Converter o GUID para formato binário (como o Oracle armazena)
+            var idParam = new OracleParameter("p_id", OracleDbType.Raw, 16, id.ToByteArray(), ParameterDirection.Input);
+
+            // 2. Executar consulta usando SQL puro com sintaxe 100% compatível com Oracle 11g
+            var solicitacaoAjuda = await _context.SolicitacaoAjuda
+                .FromSqlRaw("SELECT * FROM (SELECT * FROM SolicitacoesAjuda WHERE Id = :p_id ORDER BY 1) WHERE ROWNUM = 1", idParam)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (solicitacaoAjuda == null)
             {
                 return NotFound();
             }
 
+            // 3. Remoção usando abordagem tradicional do EF Core
             _context.SolicitacaoAjuda.Remove(solicitacaoAjuda);
             await _context.SaveChangesAsync();
 
