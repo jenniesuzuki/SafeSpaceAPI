@@ -32,7 +32,7 @@ namespace SafeSpaceAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SolicitacaoAjuda>> GetSolicitacaoAjuda(Guid id)
         {
-            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FindAsync(id);
+            var solicitacaoAjuda = await _context.SolicitacaoAjuda.SingleOrDefaultAsync(s => s.Id == id);
 
             if (solicitacaoAjuda == null)
             {
