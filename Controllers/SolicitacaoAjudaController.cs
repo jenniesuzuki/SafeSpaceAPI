@@ -32,7 +32,8 @@ namespace SafeSpaceAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SolicitacaoAjuda>> GetSolicitacaoAjuda(Guid id)
         {
-            var solicitacaoAjuda = await _context.SolicitacaoAjuda.SingleOrDefaultAsync(s => s.Id == id);
+            var solicitacaoAjuda = await _context.SolicitacaoAjuda.FromSqlRaw("SELECT * FROM SolicitaçõesAjuda WHERE Id = :p0 AND ROWNUM = 1", id)
+            .FirstOrDefaultAsync();
 
             if (solicitacaoAjuda == null)
             {
