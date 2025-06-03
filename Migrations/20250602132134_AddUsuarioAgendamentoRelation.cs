@@ -24,7 +24,7 @@ namespace SafeSpaceAPI.Migrations
                 column: "UsuarioSSId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Agendamento_UsuarioSS_UsuarioSSId",
+                name: "FK_Agendamento_UsuarioSSId",
                 table: "Agendamento",
                 column: "UsuarioSSId",
                 principalTable: "UsuarioSS",
@@ -36,7 +36,7 @@ namespace SafeSpaceAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Agendamento_UsuarioSS_UsuarioSSId",
+                name: "FK_Agendamento_UsuarioSSId",
                 table: "Agendamento");
 
             migrationBuilder.DropIndex(
