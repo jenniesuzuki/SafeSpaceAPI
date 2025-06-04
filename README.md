@@ -132,7 +132,7 @@ sudo docker run -d -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Development --name saf
 
 ## Instruções para envio de requisições
 
-Acesse o Swagger: http://(PUBLIC_IP):8080/swagger-ui/index.html
+Acesse o Swagger: http://(PUBLIC_IP):8080/swagger/index.html
 
 ### 1. Criar Solicitação de ajuda (POST)
 **Endpoint**: `POST /SolicitacaoAjuda`
