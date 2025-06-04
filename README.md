@@ -52,7 +52,9 @@ az vm create \
   --generate-ssh-keys \
   --public-ip-sku Standard
 
-az vm open-port --resource-group $RESOURCE_GROUP --name $VM_NAME --port $PORT
+az vm open-port --resource-group $RESOURCE_GROUP --name $VM_NAME --port $PORT --priority 1020
+az vm open-port --resource-group $RESOURCE_GROUP --name $VM_NAME --port 1521 --priority 1010
+
 
 echo "Esperando provisionamento..."
 sleep 10
@@ -72,13 +74,11 @@ sudo dnf install -y docker-ce docker-ce-cli containerd.io
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo yum install -y git
-sudo dnf install -y maven
-git clone https://github.com/felipe-2833/mottuGestor.git
-cd mottuGestor
-mvn clean package
-docker build -t myapp-image .
-docker run -d -p 8080:8080 myapp-image
-curl http://IP_DA_VM:8080/swagger-ui/index.html
+git clone https://github.com/jenniesuzuki/SafeSpaceAPI.git
+cd SafeSpaceAPI
+sudo docker build -t safespaceapi:dev .
+sudo docker run -d -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Development --name safespaceapi safespaceapi:dev
+sudo docker run -d   --name oracle-xe   -p 1521:1521   -e ORACLE_PASSWORD=fiap   -e ORACLE_DATABASE=FIAP   -e APP_USER=my_user   -e APP_USER_PASSWORD=fiap   -v oracle-volume:/u01/app/oracle/oradata   gvenzl/oracle-xe:11
 
 EOF
 ```
@@ -93,10 +93,14 @@ chmod +x deploy_script.sh
 ./deploy_script.sh
 ```
 
-Depois, siga as instruções listadas!
+Depois, siga as instruções listadas do script!
 
+```json
+ssh $ADMIN_USERNAME@IP_DA_VM
+```
 
-Comandos a serem executados após o a execução do script e da conexão na VM (Certifique-se que o IP da VM está correto):
+Certifique-se que o IP da VM está correto para se conectar!
+
 ```json
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 ```
@@ -111,27 +115,20 @@ sudo systemctl enable docker
 sudo yum install -y git
 ```
 ```json
-sudo dnf install -y maven
+sudo docker run -d   --name oracle-xe   -p 1521:1521   -e ORACLE_PASSWORD=fiap   -e ORACLE_DATABASE=FIAP   -e APP_USER=my_user   -e APP_USER_PASSWORD=fiap   -v oracle-volume:/u01/app/oracle/oradata   gvenzl/oracle-xe:11
 ```
 ```json
-git clone https://github.com/felipe-2833/mottuGestor.git
+git clone https://github.com/jenniesuzuki/SafeSpaceAPI.git
 ```
 ```json
-cd mottuGestor
+cd SafeSpaceAPI
 ```
 ```json
-mvn clean package
+sudo docker build -t safespaceapi:dev .
 ```
 ```json
-sudo docker build -t myapp-image .
+sudo docker run -d -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Development --name safespaceapi safespaceapi:dev
 ```
-```json
-sudo docker run -d -p 8080:8080 myapp-image
-```
-```json
-curl http://(PUBLIC_IP):8080/swagger-ui/index.html
-```
-
 
 ## Instruções para envio de requisições
 
