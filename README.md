@@ -101,6 +101,8 @@ ssh $ADMIN_USERNAME@IP_DA_VM
 
 Certifique-se que o IP da VM está correto para se conectar!
 
+Além disso, certifique-se que o IP da sua VM criada é o mesmo que está no arquivo appsettings.json, senão troque pelo IP da sua VM para conectar-se com o banco de dados Oracle!
+
 ```json
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 ```
