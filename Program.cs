@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SafeSpaceAPI.Infrastructure.Context;
 using SafeSpaceAPI.Infrastructure.Persistence.Repositories;
+using System;
 using System.Text.Json.Serialization;
 
 public class Program
@@ -67,6 +68,12 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+        }
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<SafeSpaceContext>();
+            context.Database.EnsureCreated();
         }
 
         app.UseHttpsRedirection();
