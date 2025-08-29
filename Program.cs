@@ -31,7 +31,7 @@ public class Program
             x.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "SafeSpace API",
-                Description = "API para gest„o de usu·rios e suporte psicossocial.",
+                Description = "API para gest√£o de usu√°rios e suporte psicossocial.",
                 Contact = new OpenApiContact() { Name = "Samir Hage Neto", Email = "samihneto@gmail.com" }
             });
         });
@@ -43,15 +43,15 @@ public class Program
                 .AddConsole();
         });
 
-        // ConfiguraÁ„o do DbContext com Oracle
+        // Configura√ß√£o do DbContext com Oracle
         builder.Services.AddDbContext<SafeSpaceContext>(options => {
             options
-                .UseOracle(builder.Configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging()   // Mostra valores dos par‚metros SQL no log
+                .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging()   // Mostra valores dos par√¢metros SQL no log
                 .LogTo(Console.WriteLine, LogLevel.Information);  // Loga as mensagens no console
         });
 
-        // Registro do repositÛrio genÈrico
+        // Registro do reposit√≥rio gen√©rico
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         var app = builder.Build();
